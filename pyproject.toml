@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "whatsapp-agent-ar"
+version = "0.1.0"
+description = "Arabic AI agent for small businesses on the official WhatsApp Cloud API: knowledge-base answers in Gulf Arabic, appointment booking with interactive lists, human handoff and a staff dashboard."
+readme = "README.en.md"
+license = { text = "MIT" }
+authors = [{ name = "Mohammad Hadi Javidi" }]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["whatsapp", "whatsapp-cloud-api", "whatsapp-bot", "arabic-chatbot", "ai-agent", "appointment-booking", "uae", "dubai", "gulf-arabic", "customer-support"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Natural Language :: Arabic",
+  "Topic :: Communications :: Chat",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+prod = ["gunicorn>=21"]
+
+[project.urls]
+Homepage = "https://github.com/mohammadhadijavidi/whatsapp-agent-ar"
+Issues = "https://github.com/mohammadhadijavidi/whatsapp-agent-ar/issues"
+
+[project.scripts]
+whatsapp-agent-ar = "whatsapp_agent_ar.cli:main"
+
+[tool.setuptools]
+packages = ["whatsapp_agent_ar"]
+
+[tool.setuptools.package-data]
+whatsapp_agent_ar = ["static/*.html", "static/fonts/*", "data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

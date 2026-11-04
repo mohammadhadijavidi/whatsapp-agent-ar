@@ -1,0 +1,27 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "WHATSAPP_BUSINESS_ACCOUNT_ID",
+      "changes": [
+        {
+          "field": "messages",
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {"display_phone_number": "971400000000", "phone_number_id": "PHONE_NUMBER_ID"},
+            "contacts": [{"profile": {"name": "Sample Customer"}, "wa_id": "971500000123"}],
+            "messages": [
+              {
+                "from": "971500000123",
+                "id": "wamid.SAMPLE0000000000000000000001",
+                "timestamp": "1793772000",
+                "type": "text",
+                "text": {"body": "مرحبا، بكم تنظيف الاسنان؟"}
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

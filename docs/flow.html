@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>whatsapp-agent-ar: how it works</title>
+<!-- Source of assets/flow.png. Render: python scripts/screenshot.py docs/flow.html assets/flow.png -->
+<style>
+@font-face { font-family: "Vazirmatn"; src: url("../whatsapp_agent_ar/static/fonts/Vazirmatn-Regular.woff2") format("woff2"); font-weight: 400; }
+@font-face { font-family: "Vazirmatn"; src: url("../whatsapp_agent_ar/static/fonts/Vazirmatn-Medium.woff2") format("woff2"); font-weight: 500; }
+@font-face { font-family: "Vazirmatn"; src: url("../whatsapp_agent_ar/static/fonts/Vazirmatn-Bold.woff2") format("woff2"); font-weight: 700; }
+:root { --bg: #0b1014; --panel: #121a21; --line: #2a3742; --text: #e6edf2; --muted: #8a9aa7; --g: #25d366; --amber: #f2b94b; --blue: #6aa8ff; --red: #f06a6a; }
+* { box-sizing: border-box; }
+body { margin: 0; width: 1600px; height: 900px; background: var(--bg); color: var(--text); font: 16px/1.5 "Vazirmatn", sans-serif; position: relative; overflow: hidden; }
+h1 { position: absolute; top: 34px; right: 60px; margin: 0; font-size: 30px; font-weight: 700; }
+h1 span { color: var(--g); }
+.sub { position: absolute; top: 82px; right: 60px; color: var(--muted); font-size: 16px; }
+.box { position: absolute; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; }
+.box h3 { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+.box p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.box .en { direction: ltr; unicode-bidi: isolate; font-size: 12.5px; color: #6f8291; display: block; margin-top: 4px; }
+.g { border-color: rgba(37,211,102,.55); }
+.g h3 { color: var(--g); }
+.a { border-color: rgba(242,185,75,.6); }
+.a h3 { color: var(--amber); }
+.b { border-color: rgba(106,168,255,.55); }
+.b h3 { color: var(--blue); }
+.r { border-color: rgba(240,106,106,.55); }
+.r h3 { color: var(--red); }
+.step { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: var(--g); color: #062b17; font-weight: 700; font-size: 14px; display: grid; place-items: center; top: -13px; right: -13px; }
+svg { position: absolute; inset: 0; }
+.lbl { position: absolute; font-size: 13px; color: var(--muted); background: var(--bg); padding: 0 6px; }
+.route { position: absolute; display: flex; gap: 10px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 14px; background: #0f161c; width: 196px; }
+.chip b { display: block; font-size: 15px; }
+.chip small { color: var(--muted); font-size: 12.5px; }
+.note { position: absolute; top: 735px; right: 60px; left: 60px; display: flex; gap: 14px; }
+.note div { flex: 1; border: 1px dashed var(--line); border-radius: 12px; padding: 12px 16px; font-size: 14px; color: var(--muted); }
+.note b { color: var(--text); font-weight: 500; }
+.legend { position: absolute; bottom: 26px; right: 60px; left: 60px; display: flex; gap: 26px; color: var(--muted); font-size: 13.5px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-left: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<h1>كيف يعمل <span>whatsapp-agent-ar</span></h1>
+<div class="sub">من رسالة العميل على واتساب إلى رد آلي أو حجز أو تحويل لموظف، عبر WhatsApp Cloud API الرسمي فقط</div>
+
+<svg width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5d7180"/></marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#25d366"/></marker>
+  </defs>
+  <!-- customer -> meta -->
+  <path d="M1330 240 L1240 240" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <!-- meta -> webhook -->
+  <path d="M1000 240 L905 240" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <!-- webhook -> router -->
+  <path d="M760 300 L760 360" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <!-- router -> handlers -->
+  <path d="M760 470 L760 520" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <!-- handlers -> sender -->
+  <path d="M440 590 L395 590" stroke="#25d366" stroke-width="2" fill="none" marker-end="url(#arrg)"/>
+  <!-- sender -> meta (reply) -->
+  <path d="M230 520 L230 150 Q230 120 260 120 L1090 120 Q1120 120 1120 150 L1120 190" stroke="#25d366" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#arrg)"/>
+  <!-- store <-> dashboard -->
+  <path d="M1084 590 L1103 590" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+  <path d="M1255 590 L1300 590" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <path d="M1000 415 L962 415" stroke="#5d7180" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+</svg>
+
+<div class="lbl" style="top:216px;left:1252px">رسالة</div>
+<div class="lbl" style="top:250px;left:908px;direction:ltr;font-size:12px">POST<br>/webhook</div>
+<div class="lbl" style="top:108px;left:520px">الرد: <bdi dir="ltr">POST /{phone-number-id}/messages</bdi></div>
+
+<div class="box" style="top:190px;right:60px;width:210px">
+  <h3>العميل</h3>
+  <p>يكتب بالعامية الإماراتية أو الفصحى أو الإنجليزية، أو يضغط زراً في قائمة</p>
+</div>
+
+<div class="box g" style="top:190px;left:1000px;width:240px">
+  <h3>WhatsApp Cloud API</h3>
+  <p>منصة Meta الرسمية. ترسل الرسائل وحالات التسليم إلى الـ webhook</p>
+</div>
+
+<div class="box b" style="top:180px;left:560px;width:345px">
+  <div class="step">1</div>
+  <h3>الـ Webhook والأمان</h3>
+  <p>التحقق من <b>X-Hub-Signature-256</b> بمفتاح App Secret (يُرفض الطلب إن لم يطابق)، ومصافحة hub.verify_token، ومنع تكرار نفس wamid</p>
+</div>
+
+<div class="box" style="top:360px;left:560px;width:400px">
+  <div class="step">2</div>
+  <h3>الموجّه (Router)</h3>
+  <p>تطبيع عربي (الهمزات، التاء المربوطة، التشكيل) ومرادفات خليجية، ثم يختار المسار. إذا كانت المحادثة مع موظف يصمت المساعد</p>
+</div>
+
+<div class="route" style="top:520px;left:440px;width:640px">
+  <div class="chip"><b>قاعدة المعرفة</b><small>BM25 على الأسئلة الشائعة، يجيب عن سؤالين في رسالة واحدة</small></div>
+  <div class="chip"><b>حجز موعد</b><small>قوائم تفاعلية: الخدمة ثم اليوم ثم الوقت ثم التأكيد</small></div>
+  <div class="chip"><b>تحويل لموظف</b><small>كلمات مثل «ابي اكلم موظف»، الوسائط، أو تكرار عدم الفهم</small></div>
+  <div class="chip"><b>نموذج لغوي (اختياري)</b><small>مقيد بالحقائق فقط، وإلا يرد UNKNOWN</small></div>
+  <div class="chip"><b>مواعيدي / إلغاء</b><small>عرض الحجوزات القادمة وإلغاؤها بزر</small></div>
+  <div class="chip"><b>تذكير بالمواعيد</b><small>أزرار داخل 24 ساعة، وقالب معتمد خارجها</small></div>
+</div>
+
+<div class="box a" style="top:520px;left:60px;width:335px">
+  <div class="step">3</div>
+  <h3>المُرسِل وقاعدة الـ 24 ساعة</h3>
+  <p>الرسائل الحرة مسموحة فقط خلال 24 ساعة من آخر رسالة للعميل، وبعدها قالب معتمد فقط. حدود الأزرار (20 حرفاً) والقوائم (10 صفوف) مطبقة قبل الإرسال</p>
+  <span class="en">dry-run mode: payloads are logged, nothing is sent</span>
+</div>
+
+<div class="box" style="top:520px;left:1105px;width:150px;height:150px">
+  <h3>SQLite</h3>
+  <p>العملاء، الرسائل، الحالات، المواعيد</p>
+</div>
+
+<div class="box g" style="top:520px;left:1300px;width:240px">
+  <h3>لوحة المحادثات</h3>
+  <p>رد الموظف، استلام وإرجاع المحادثة، عدّاد نافذة الـ 24 ساعة، المواعيد القادمة، والإحصاءات</p>
+</div>
+
+<div class="box" style="top:360px;left:1000px;width:240px;height:110px;border-style:dashed">
+  <h3>ملف النشاط JSON</h3>
+  <p>ساعات العمل، الخدمات والأسعار، الأسئلة الشائعة، أيام الإغلاق</p>
+</div>
+
+<div class="note">
+  <div><b>مثال:</b> «وين مكانكم؟ وفي باركنج؟» يُقسم إلى سؤالين، فيُرد بالعنوان ومعلومة المواقف في رسالة واحدة.</div>
+  <div><b>مثال:</b> «ابي احجز تبييض» تُكتشف الخدمة مباشرة، فيُعرض اختيار اليوم دون سؤال إضافي.</div>
+  <div><b>مثال:</b> عميل كتب قبل 30 ساعة: زر الرد الحر في اللوحة يُعطَّل ويظهر «إرسال قالب».</div>
+</div>
+
+<div class="legend">
+  <span><i style="background:#25d366"></i>مسار الرد إلى العميل</span>
+  <span><i style="background:#6aa8ff"></i>طبقة الأمان</span>
+  <span><i style="background:#f2b94b"></i>قواعد سياسة WhatsApp</span>
+  <span style="margin-right:auto;direction:ltr">Official WhatsApp Cloud API only. No unofficial libraries, no WhatsApp Web automation.</span>
+</div>
+</body>
+</html>

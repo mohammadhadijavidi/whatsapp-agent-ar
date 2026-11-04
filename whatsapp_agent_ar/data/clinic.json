@@ -1,0 +1,90 @@
+{
+  "_note": "SAMPLE DATA: a fictional dental clinic written by hand for the demo. Not a real business; prices and details are invented.",
+  "name": "عيادة نخلة لطب الأسنان",
+  "name_en": "Nakhla Dental Clinic",
+  "timezone": "Asia/Dubai",
+  "currency": "AED",
+  "slot_step_minutes": 30,
+  "min_notice_minutes": 60,
+  "booking_horizon_days": 14,
+  "hours": {
+    "sat": ["09:00-13:00", "16:00-21:00"],
+    "sun": ["09:00-13:00", "16:00-21:00"],
+    "mon": ["09:00-13:00", "16:00-21:00"],
+    "tue": ["09:00-13:00", "16:00-21:00"],
+    "wed": ["09:00-13:00", "16:00-21:00"],
+    "thu": ["09:00-13:00", "16:00-21:00"],
+    "fri": ["16:00-21:00"]
+  },
+  "closed_dates": ["2026-12-02", "2026-12-03"],
+  "services": [
+    {"id": "checkup", "name": "كشف وفحص", "name_en": "Check-up", "minutes": 30, "price": 150, "keywords": ["كشف", "فحص", "استشاره", "checkup", "consultation", "check"]},
+    {"id": "cleaning", "name": "تنظيف وتلميع", "name_en": "Cleaning & polish", "minutes": 45, "price": 250, "keywords": ["تنظيف", "cleaning"]},
+    {"id": "whitening", "name": "تبييض الأسنان", "name_en": "Teeth whitening", "minutes": 60, "price": 900, "keywords": ["تبييض", "whitening"]},
+    {"id": "filling", "name": "حشوة تجميلية", "name_en": "Composite filling", "minutes": 45, "price": 350, "keywords": ["حشوه", "حشو", "تسوس", "filling", "cavity"]},
+    {"id": "braces", "name": "استشارة تقويم", "name_en": "Orthodontic consult", "minutes": 30, "price": 0, "keywords": ["تقويم", "braces", "aligners"]}
+  ],
+  "handoff_keywords": ["موظف", "موظفه", "انسان", "شخص حقيقي", "اكلم احد", "ابي اكلم", "ابغى اكلم", "مسؤول", "المدير", "شكوى", "اشتكي", "human", "agent", "representative", "real person", "complaint", "manager"],
+  "faq": [
+    {
+      "id": "hours",
+      "questions": ["متى تفتحون؟", "ساعات الدوام", "هل انتم فاتحين يوم الجمعة؟", "What are your opening hours?"],
+      "answer": "دوامنا من السبت إلى الخميس: 9 صباحاً حتى 1 ظهراً، ومن 4 عصراً حتى 9 مساءً. يوم الجمعة من 4 عصراً حتى 9 مساءً فقط.",
+      "answer_en": "We are open Saturday to Thursday 9am-1pm and 4pm-9pm, and on Friday 4pm-9pm only."
+    },
+    {
+      "id": "location",
+      "questions": ["وين موقعكم؟", "العنوان", "لوكيشن العيادة", "Where are you located?"],
+      "answer": "العيادة في البرشاء، دبي، بناية الواحة (عنوان تجريبي)، الطابق الثاني، مكتب 204. أقرب محطة مترو: مول الإمارات.",
+      "answer_en": "We are in Al Barsha, Dubai, Al Waha Building (sample address), 2nd floor, office 204. Nearest metro: Mall of the Emirates."
+    },
+    {
+      "id": "parking",
+      "questions": ["في مواقف؟", "وين اوقف الموتر؟", "Is there parking?"],
+      "answer": "نعم، يوجد موقف مجاني للمراجعين في الطابق السفلي للبناية لمدة ساعتين.",
+      "answer_en": "Yes, there is free patient parking in the building basement for up to two hours."
+    },
+    {
+      "id": "prices",
+      "questions": ["كم سعر الكشف؟", "بكم التنظيف؟", "الأسعار", "كم تكلفة التبييض", "How much is whitening?"],
+      "answer": "الأسعار: الكشف 150 درهم، التنظيف والتلميع 250 درهم، الحشوة التجميلية من 350 درهم، التبييض 900 درهم، واستشارة التقويم مجانية. الأسعار تشمل ضريبة القيمة المضافة.",
+      "answer_en": "Prices: check-up AED 150, cleaning & polish AED 250, composite filling from AED 350, whitening AED 900, orthodontic consult free. Prices include VAT."
+    },
+    {
+      "id": "insurance",
+      "questions": ["تقبلون التأمين؟", "عندي تأمين ضمان", "هل التأمين يغطي؟", "Do you accept insurance?"],
+      "answer": "نقبل معظم شركات التأمين الرئيسية في دبي. أرسل لنا اسم شركة التأمين وصورة البطاقة وسيتأكد موظف الاستقبال من التغطية قبل موعدك.",
+      "answer_en": "We accept most major insurers in Dubai. Send us your insurer name and a photo of your card and reception will confirm coverage before your visit."
+    },
+    {
+      "id": "payment",
+      "questions": ["طرق الدفع", "اقدر ادفع تابي؟", "تقبلون كاش؟", "Can I pay in installments?"],
+      "answer": "نقبل الدفع نقداً أو بالبطاقة، والتقسيط عبر تابي وتمارا للعلاجات فوق 500 درهم.",
+      "answer_en": "We accept cash or card, and installments via Tabby and Tamara for treatments above AED 500."
+    },
+    {
+      "id": "kids",
+      "questions": ["تستقبلون الأطفال؟", "ولدي عمره 5 سنوات", "Do you treat children?"],
+      "answer": "نعم، نستقبل الأطفال من عمر 3 سنوات، ولدينا طبيبة متخصصة في أسنان الأطفال مساء الأحد والثلاثاء.",
+      "answer_en": "Yes, we treat children from age 3, and our pediatric dentist is in on Sunday and Tuesday evenings."
+    },
+    {
+      "id": "emergency",
+      "questions": ["عندي الم شديد", "ضرسي يعورني", "حالة طارئة", "I have tooth pain"],
+      "answer": "سلامتك. في حالات الألم الشديد نحاول نعطيك أول موعد متاح اليوم. اكتب «حجز» لاختيار أقرب وقت، أو اكتب «موظف» ليتواصل معك الاستقبال فوراً. إذا كان هناك تورم شديد أو صعوبة في التنفس اتصل بالإسعاف 998.",
+      "answer_en": "Sorry to hear that. For severe pain we try to give you the first slot today: type \"book\" to pick the nearest time, or \"agent\" to reach reception now. If there is major swelling or difficulty breathing, call an ambulance on 998."
+    },
+    {
+      "id": "cancel",
+      "questions": ["ابي الغي موعدي", "كيف اأجل الموعد؟", "Can I reschedule?"],
+      "answer": "يمكنك إلغاء أو تأجيل الموعد مجاناً قبل 12 ساعة على الأقل. اكتب «مواعيدي» لعرض موعدك أو «موظف» للمساعدة.",
+      "answer_en": "You can cancel or reschedule for free at least 12 hours in advance. Type \"my appointments\" to see your booking or \"agent\" for help."
+    },
+    {
+      "id": "braces",
+      "questions": ["عندكم تقويم شفاف؟", "كم سعر التقويم؟", "Do you do invisible aligners?"],
+      "answer": "نعم، نقدم التقويم المعدني والتقويم الشفاف. الاستشارة الأولى مجانية، وبعدها يحدد الطبيب الخطة والتكلفة حسب الحالة.",
+      "answer_en": "Yes, we offer metal braces and clear aligners. The first consultation is free; the doctor then sets the plan and cost for your case."
+    }
+  ]
+}

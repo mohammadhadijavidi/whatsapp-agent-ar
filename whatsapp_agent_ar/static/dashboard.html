@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة المحادثات | whatsapp-agent-ar</title>
+<style>
+@font-face { font-family: "Vazirmatn"; src: url("/static/fonts/Vazirmatn-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Vazirmatn"; src: url("/static/fonts/Vazirmatn-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Vazirmatn"; src: url("/static/fonts/Vazirmatn-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+:root {
+  --bg: #0b1014; --panel: #11181e; --panel-2: #161f27; --line: #222d36; --text: #e6edf2; --muted: #8696a3;
+  --accent: #25d366; --accent-dim: #134d34; --bubble-in: #1b252e; --bubble-out: #0f4a3a; --bubble-staff: #23365a;
+  --warn: #f2b94b; --danger: #f06a6a; --chip: #1c2730;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--text); font: 14px/1.6 "Vazirmatn", "Noto Sans Arabic", system-ui, sans-serif; display: flex; flex-direction: column; }
+button { font: inherit; cursor: pointer; }
+.top { display: flex; align-items: center; gap: 18px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; white-space: nowrap; }
+.logo { width: 30px; height: 30px; border-radius: 9px; background: var(--accent); display: grid; place-items: center; color: #062b17; font-weight: 700; }
+.brand small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+.stats { display: flex; gap: 10px; margin-inline-start: auto; flex-wrap: wrap; }
+.stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 14px; min-width: 104px; }
+.stat b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+.stat span { color: var(--muted); font-size: 12px; }
+.stat.warn b { color: var(--warn); }
+.mode { font-size: 12px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--warn); color: var(--warn); white-space: nowrap; }
+.mode.live { border-color: var(--accent); color: var(--accent); }
+main { flex: 1; display: grid; grid-template-columns: 330px 1fr 300px; min-height: 0; }
+aside, section { min-height: 0; }
+.list { border-inline-end: 1px solid var(--line); overflow-y: auto; background: var(--panel); }
+.list h3, .side h3 { margin: 0; padding: 14px 16px 8px; font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .02em; }
+.conv { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--line); cursor: pointer; align-items: center; }
+.conv:hover { background: var(--panel-2); }
+.conv.active { background: #18242d; box-shadow: inset -3px 0 0 var(--accent); }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: #26333d; color: #cfe3d6; }
+.conv .name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conv .last { color: var(--muted); font-size: 12.5px; white-space: nowrap; display: flex; gap: 4px; max-width: 210px; }
+.conv .last .lt { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.conv .meta { text-align: left; font-size: 11px; color: var(--muted); display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.badge { background: var(--accent); color: #062b17; border-radius: 99px; font-size: 11px; padding: 0 7px; font-weight: 700; }
+.tag { font-size: 11px; border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
+.tag.handoff { background: #3a2a10; color: var(--warn); }
+.tag.closed { background: #3a1818; color: var(--danger); }
+.tag.bot { background: var(--accent-dim); color: #7ee2a8; }
+.chat { display: flex; flex-direction: column; min-width: 0; background: #0d1418; }
+.chat-head { display: flex; align-items: center; gap: 12px; padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.chat-head .who { font-weight: 700; }
+.chat-head .num { color: var(--muted); font-size: 12px; direction: ltr; unicode-bidi: isolate; }
+.chat-head .actions { margin-inline-start: auto; display: flex; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--panel-2); color: var(--text); border-radius: 8px; padding: 6px 12px; font-size: 13px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #062b17; font-weight: 700; }
+.btn.warn { border-color: var(--warn); color: var(--warn); }
+.thread { flex: 1; overflow-y: auto; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; }
+.day-sep { align-self: center; font-size: 11.5px; color: var(--muted); background: var(--chip); padding: 2px 12px; border-radius: 99px; margin: 6px 0; }
+.msg > div[dir="auto"] { text-align: start; }
+.msg { max-width: 68%; padding: 8px 12px 6px; border-radius: 12px; white-space: pre-wrap; word-wrap: break-word; position: relative; }
+.msg.in { align-self: flex-start; background: var(--bubble-in); border-start-start-radius: 4px; }
+.msg.out { align-self: flex-end; background: var(--bubble-out); border-start-end-radius: 4px; }
+.msg.staff { background: var(--bubble-staff); }
+.msg.blocked { outline: 1px dashed var(--danger); opacity: .8; }
+.msg .foot { display: flex; gap: 8px; justify-content: flex-end; align-items: center; font-size: 11px; color: #9fb3c0; margin-top: 4px; }
+.src { font-size: 10.5px; padding: 0 6px; border-radius: 5px; background: rgba(255,255,255,.07); color: #b8c8d2; direction: ltr; unicode-bidi: isolate; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.opt { font-size: 12.5px; border: 1px solid rgba(37,211,102,.45); color: #7ee2a8; border-radius: 8px; padding: 2px 10px; background: rgba(37,211,102,.06); }
+.opt.list::before { content: "☰ "; opacity: .7; }
+.composer { border-top: 1px solid var(--line); padding: 12px 16px; background: var(--panel); display: flex; gap: 10px; align-items: flex-end; }
+.composer textarea { flex: 1; resize: none; height: 44px; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
+.composer .note { font-size: 12px; color: var(--muted); }
+.window-closed { flex: 1; font-size: 13px; color: var(--warn); background: #2b2210; border: 1px solid #5a4416; border-radius: 10px; padding: 10px 12px; }
+.side { border-inline-start: 1px solid var(--line); background: var(--panel); overflow-y: auto; }
+.card { margin: 0 14px 14px; padding: 12px 14px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; }
+.row { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; font-size: 13px; }
+.row span:first-child { color: var(--muted); }
+.meter { height: 6px; background: #26323b; border-radius: 99px; overflow: hidden; margin-top: 8px; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.appt { display: grid; grid-template-columns: 52px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.appt:last-child { border-bottom: 0; }
+.appt .when { background: #10251b; color: #7ee2a8; border-radius: 8px; text-align: center; font-size: 11.5px; line-height: 1.35; padding: 4px 2px; }
+.appt .when b { display: block; font-size: 14px; }
+.appt .svc { font-weight: 500; }
+.appt .cust { color: var(--muted); font-size: 12px; }
+.empty { color: var(--muted); padding: 40px; text-align: center; margin: auto; }
+.sample { margin: 0 14px 14px; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+.problems { margin: 0 14px 14px; font-size: 12px; color: var(--warn); }
+.ltr { direction: ltr; unicode-bidi: isolate; }
+@media (max-width: 1100px) { main { grid-template-columns: 280px 1fr; } .side { display: none; } }
+@media (max-width: 720px) { main { grid-template-columns: 1fr; } .list { display: none; } .stats { display: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo">و</div><div><span id="biz">...</span><small>وكيل واتساب الذكي | لوحة المحادثات</small></div></div>
+  <span class="mode" id="mode">...</span>
+  <div class="stats">
+    <div class="stat"><b id="s-conv">0</b><span>محادثات</span></div>
+    <div class="stat"><b id="s-auto">0%</b><span>ردود آلية</span></div>
+    <div class="stat"><b id="s-kb">0</b><span>إجابات من المعرفة</span></div>
+    <div class="stat"><b id="s-appt">0</b><span>حجوزات (7 أيام)</span></div>
+    <div class="stat warn"><b id="s-wait">0</b><span>بانتظار موظف</span></div>
+  </div>
+</header>
+<main>
+  <aside class="list"><h3>المحادثات</h3><div id="convs"></div></aside>
+  <section class="chat">
+    <div class="chat-head" id="chat-head" hidden>
+      <div class="avatar" id="h-avatar"></div>
+      <div><div class="who" id="h-name"></div><div class="num" id="h-num"></div></div>
+      <div class="actions">
+        <button class="btn warn" id="b-take">استلام المحادثة</button>
+        <button class="btn" id="b-release">إرجاع للمساعد الآلي</button>
+      </div>
+    </div>
+    <div class="thread" id="thread"><div class="empty">اختر محادثة من القائمة</div></div>
+    <div class="composer" id="composer" hidden></div>
+  </section>
+  <aside class="side">
+    <h3>العميل</h3>
+    <div class="card" id="info"><div class="row"><span>لا توجد محادثة محددة</span></div></div>
+    <h3>المواعيد القادمة</h3>
+    <div class="card" id="appts"></div>
+    <div class="problems" id="problems"></div>
+    <div class="sample" id="sample"></div>
+  </aside>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let current = null, state = { convs: [], appts: [], stats: {} };
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const initials = (n, id) => (n || "").trim() ? (n.trim()[0]) : id.slice(-2);
+const fmtTime = (iso) => new Date(iso).toLocaleTimeString("ar-AE", { hour: "numeric", minute: "2-digit", timeZone: "Asia/Dubai" });
+const fmtDay = (iso) => new Date(iso).toLocaleDateString("ar-AE", { weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Dubai" });
+const fmtNum = (wa) => "+" + wa.replace(/^(\d{3})(\d{2})(\d{3})(\d+)$/, "$1 $2 $3 $4");
+const left = (sec) => { const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60); return `${h} س ${m} د`; };
+const SRC = { menu: "قائمة", booking: "حجز", handoff: "تحويل", fallback: "لم يُفهم", staff: "موظف", template: "قالب", reminder: "تذكير", appointments: "مواعيد", flow: "حجز" };
+const srcLabel = (s) => !s ? "" : s.startsWith("kb:") ? "قاعدة المعرفة · " + s.slice(3) : s.startsWith("llm:") ? "نموذج لغوي · " + s.slice(4) : (SRC[s] || s);
+const STATUS = { dry_run: "تجريبي", sent: "✓", delivered: "✓✓", read: "✓✓ مقروءة", failed: "فشل", blocked: "محظور (خارج 24 ساعة)", queued: "..." };
+
+async function api(path, opts) {
+  const r = await fetch("/api/" + path, opts && { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(opts) });
+  const data = await r.json();
+  if (!r.ok) throw Object.assign(new Error(data.message || data.error), { data });
+  return data;
+}
+
+function renderStats() {
+  const s = state.stats;
+  $("biz").textContent = s.business || "";
+  $("mode").textContent = s.dry_run ? "وضع تجريبي: لا يُرسل شيء إلى واتساب" : "متصل بـ WhatsApp Cloud API";
+  $("mode").className = "mode" + (s.dry_run ? "" : " live");
+  $("s-conv").textContent = s.conversations ?? 0;
+  $("s-auto").textContent = Math.round((s.automation_rate || 0) * 100) + "%";
+  $("s-kb").textContent = s.kb_answers ?? 0;
+  $("s-appt").textContent = s.appointments ?? 0;
+  $("s-wait").textContent = s.waiting_for_staff ?? 0;
+  $("problems").innerHTML = (s.config_problems || []).length && !s.dry_run ? (s.config_problems || []).map((p) => `<div class="ltr">! ${esc(p)}</div>`).join("") : "";
+  $("sample").textContent = s.dry_run ? "في الوضع التجريبي تُحفظ الرسائل الصادرة محلياً بصيغة WhatsApp Cloud API نفسها دون إرسالها. أسماء العملاء في العرض التوضيحي بيانات عينة وهمية." : "";
+}
+
+function renderConvs() {
+  $("convs").innerHTML = state.convs.map((c) => {
+    const tag = c.handoff ? `<span class="tag handoff">بانتظار موظف</span>` : !c.window_open ? `<span class="tag closed">النافذة مغلقة</span>` : `<span class="tag bot">المساعد الآلي</span>`;
+    const prefix = c.last_author === "bot" ? "المساعد:" : c.last_author === "staff" ? "أنت:" : "";
+    return `<div class="conv ${current === c.wa_id ? "active" : ""}" data-id="${c.wa_id}">
+      <div class="avatar">${esc(initials(c.name, c.wa_id))}</div>
+      <div style="min-width:0"><div class="name">${esc(c.name || fmtNum(c.wa_id))}</div><div class="last">${prefix ? `<span>${prefix}</span>` : ""}<span class="lt" dir="auto">${esc((c.last_body || "").split("\n")[0])}</span></div></div>
+      <div class="meta"><span>${c.last_message_at ? fmtTime(c.last_message_at) : ""}</span>${c.unread ? `<span class="badge">${c.unread}</span>` : tag}</div>
+    </div>`;
+  }).join("") || `<div class="empty">لا توجد محادثات بعد</div>`;
+  document.querySelectorAll(".conv").forEach((el) => el.onclick = () => open(el.dataset.id));
+}
+
+function renderAppts() {
+  $("appts").innerHTML = state.appts.slice(0, 6).map((a) => {
+    const d = new Date(a.start);
+    const conv = state.convs.find((c) => c.wa_id === a.wa_id);
+    return `<div class="appt"><div class="when"><b>${d.toLocaleDateString("ar-AE", { day: "numeric", timeZone: "Asia/Dubai" })}</b>${d.toLocaleDateString("ar-AE", { month: "short", timeZone: "Asia/Dubai" })}</div>
+      <div><div class="svc">${esc(a.service)} <span class="src">#${a.id}</span></div><div class="cust">${esc((conv && conv.name) || a.name || fmtNum(a.wa_id))} · ${fmtDay(a.start).split("،")[0]} ${fmtTime(a.start)}</div></div></div>`;
+  }).join("") || `<div class="row"><span>لا توجد مواعيد قادمة</span></div>`;
+}
+
+function optionsHtml(m) {
+  const p = m.payload;
+  if (m.direction !== "out" || !p || p.type !== "interactive") return "";
+  const it = p.interactive;
+  if (it.type === "button") return `<div class="opts">${it.action.buttons.map((b) => `<span class="opt">${esc(b.reply.title)}</span>`).join("")}</div>`;
+  const rows = it.action.sections.flatMap((s) => s.rows);
+  return `<div class="opts">${rows.slice(0, 6).map((r) => `<span class="opt list">${esc(r.title)}</span>`).join("")}${rows.length > 6 ? `<span class="opt">+${rows.length - 6}</span>` : ""}</div>`;
+}
+
+function bodyText(m) {
+  if (m.direction === "out" && m.payload && m.payload.type === "interactive") return m.payload.interactive.body.text;
+  return m.body;
+}
+
+async function open(id) {
+  current = id;
+  renderConvs();
+  const c = await api("conversations/" + id);
+  $("chat-head").hidden = false;
+  $("h-avatar").textContent = initials(c.name, c.wa_id);
+  $("h-name").textContent = c.name || fmtNum(c.wa_id);
+  $("h-num").textContent = fmtNum(c.wa_id);
+  $("b-take").hidden = c.handoff; $("b-release").hidden = !c.handoff;
+  let lastDay = "", html = "";
+  for (const m of c.messages) {
+    const day = fmtDay(m.created_at);
+    if (day !== lastDay) { html += `<div class="day-sep">${day}</div>`; lastDay = day; }
+    const cls = m.direction === "in" ? "in" : "out" + (m.author === "staff" ? " staff" : "") + (m.status === "blocked" ? " blocked" : "");
+    const src = m.direction === "out" ? srcLabel(m.meta && m.meta.source) : "";
+    html += `<div class="msg ${cls}"><div dir="auto">${esc(bodyText(m))}</div>${optionsHtml(m)}<div class="foot">${src ? `<span class="src">${esc(src)}</span>` : ""}<span>${fmtTime(m.created_at)}</span>${m.direction === "out" ? `<span>${STATUS[m.status] || esc(m.status)}</span>` : ""}</div></div>`;
+  }
+  $("thread").innerHTML = html;
+  const bottom = () => { $("thread").scrollTop = $("thread").scrollHeight; };
+  bottom(); document.fonts.ready.then(() => requestAnimationFrame(bottom));
+  const comp = $("composer"); comp.hidden = false;
+  if (c.window_open) {
+    comp.innerHTML = `<textarea id="reply" placeholder="اكتب رداً للعميل... (يستلم الموظف المحادثة تلقائياً)"></textarea><button class="btn primary" id="send">إرسال</button>`;
+    $("send").onclick = send;
+  } else {
+    comp.innerHTML = `<div class="window-closed">مرّ أكثر من 24 ساعة على آخر رسالة من العميل، لذلك لا تسمح WhatsApp إلا برسالة قالب معتمد.</div><button class="btn warn" id="tpl">إرسال قالب</button>`;
+    $("tpl").onclick = () => sendTemplate(c);
+  }
+  const pct = Math.round((c.window_seconds_left / 86400) * 100);
+  $("info").innerHTML = `
+    <div class="row"><span>الاسم</span><span>${esc(c.name || "-")}</span></div>
+    <div class="row"><span>الرقم</span><span class="ltr">${fmtNum(c.wa_id)}</span></div>
+    <div class="row"><span>اللغة</span><span>${c.lang === "en" ? "الإنجليزية" : "العربية"}</span></div>
+    <div class="row"><span>الحالة</span><span>${c.handoff ? "مع موظف" + (c.handoff_reason ? ` <span class="src">${esc(c.handoff_reason)}</span>` : "") : "المساعد الآلي"}</span></div>
+    <div class="row"><span>نافذة الـ 24 ساعة</span><span>${c.window_open ? "متبقٍ " + left(c.window_seconds_left) : "مغلقة"}</span></div>
+    <div class="meter"><i style="width:${pct}%;${c.window_open ? "" : "background:var(--danger)"}"></i></div>`;
+}
+
+async function send() {
+  const text = $("reply").value.trim(); if (!text) return;
+  try { await api(`conversations/${current}/reply`, { text }); } catch (e) { alert(e.message); }
+  await refresh(); open(current);
+}
+async function sendTemplate(c) {
+  const params = prompt("قيم متغيرات القالب مفصولة بـ |", c.name || "");
+  if (params === null) return;
+  await api(`conversations/${current}/template`, { params: params.split("|").map((s) => s.trim()) });
+  await refresh(); open(current);
+}
+$("b-take").onclick = async () => { await api(`conversations/${current}/handoff`, { action: "take" }); await refresh(); open(current); };
+$("b-release").onclick = async () => { await api(`conversations/${current}/handoff`, { action: "release" }); await refresh(); open(current); };
+
+async function refresh() {
+  [state.stats, state.convs, state.appts] = await Promise.all([api("stats"), api("conversations"), api("appointments")]);
+  renderStats(); renderConvs(); renderAppts();
+}
+refresh().then(() => {
+  const q = new URLSearchParams(location.search).get("c");
+  if (q) open(q);
+});
+setInterval(() => refresh().then(() => { if (current && !($("reply") && $("reply").value)) open(current); }), 15000);
+</script>
+</body>
+</html>
